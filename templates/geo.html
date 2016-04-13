@@ -1,0 +1,120 @@
+<html>
+
+<head>
+    <title>Peridot: Geocoder</title>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }
+
+    input[readonly] {
+        background-color: white !important;
+        cursor: text !important;
+    }
+
+    .vertical-center {
+        min-height: 100%;
+        /* Fallback for browsers do NOT support vh unit */
+        min-height: 100vh;
+        /* These two lines are counted as one :-)       */
+        display: flex;
+        align-items: center;
+    }
+
+    .horizontal-center {
+        min-width: 100%;
+        /* Fallback for browsers do NOT support vh unit */
+        min-width: 100vh;
+        /* These two lines are counted as one :-)       */
+        display: flex;
+        align-items: center;
+    }
+
+    body {
+        background: url(/static/bg2.jpg) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        overflow: hidden;
+    }
+
+    .jumbotron {
+        background-color:rgba(255, 255, 255, 0.7)
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container vertical-center">
+        <div class="jumbotron text-center col-lg-7 center-block">
+            <h1>Geocoder</h1></br>
+            <form action="/geo" method="post" enctype="multipart/form-data">
+                <fieldset>
+                    <div class="row">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+					                    <span class="btn btn-primary btn-file">
+					                        Browse... <input type="file" name="data_file">
+					                    </span>
+                            </span>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                        <span class="help-block">
+				            	Select a file. Files must be csv and formatted as "Unique ID, Address, City, State, Zip" and contain a header row.
+				            </span>
+                        <input type="submit" class="btn btn-primary" />
+                    </div>
+        </div>
+        </fieldset>
+        </form>
+    </div>
+    </div>
+    <script>
+    $(document).on('change', '.btn-file :file', function() {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [
+            numFiles,
+            label
+        ]);
+    });
+    $(document).ready(function() {
+        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+            if (input.length) {
+                input.val(log);
+            } else {
+                if (log)
+                    alert(log);
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>
