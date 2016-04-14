@@ -1,0 +1,7 @@
+flask == 0.10
+census_geo
+io
+requests
+itertools
+pandas == 0.18
+gunicorn
