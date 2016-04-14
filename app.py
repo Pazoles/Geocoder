@@ -1,5 +1,6 @@
 from flask import Flask, make_response, request, render_template, redirect, url_for, send_file
 from census_geo import chunketize, geocode
+from io import StringIO
 
 app = Flask(__name__)
 #app.config.from_object('config')
@@ -10,9 +11,9 @@ def geo_post():
     if not file:
         return "No file attached"
 
-    file_contents = file.stream.readlines()[1:]
-
-    result = geocode(file_contents)
+    #file_contents = file.stream.readlines()[1:]
+    file_contents = StringIO(file.stream.read().decode("UTF8"), newline=None)
+    result = geocode(file_contents.getvalue())
 
     response = make_response(result)
     response.headers["Content-Disposition"] = "attachment; filename=result.csv"
