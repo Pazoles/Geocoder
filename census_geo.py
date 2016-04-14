@@ -17,7 +17,7 @@ def chunketize(x,y):
 def geocode(x):
     url = 'http://geocoding.geo.census.gov/geocoder/locations/addressbatch'
     census_year = {'benchmark': 'Public_AR_Current'}
-    data_chunks = chunketize(x,1000)
+    data_chunks = chunketize(str(x),1000)
     buff = StringIO()
     for i in range(len(data_chunks)):
         files = {'addressFile': ''.join(data_chunks[i])}
@@ -27,13 +27,13 @@ def geocode(x):
             buff.write(block)
     outraw = buff.getvalue()
     cnames = ['id_number', 'input_address', 'match_status', 'match_type', 'matched_address', 'lonlat', 'tigerline_id', 'street_orientation']
-    df = pd.read_csv(StringIO(outraw), names=cnames, skiprows=0, index_col=False, sep=',', na_values='')
+    df = pd.read_csv(StringIO(outraw), names=cnames, skiprows=1, index_col=False, sep=',', na_values='')
     #add malformed file handling
-    #df['longitude'] = df['lonlat'].str.split(',', expand=True)[0]
-    #df['latitude'] = df['lonlat'].str.split(',', expand=True)[1]
-    #final_order = ['id_number', 'input_address', 'match_status', 'match_type', 'matched_address', 'latitude', 'longitude', 'tigerline_id', 'street_orientation']
+    df['longitude'] = df['lonlat'].str.split(',', expand=True)[0]
+    df['latitude'] = df['lonlat'].str.split(',', expand=True)[1]
+    final_order = ['id_number', 'input_address', 'match_status', 'match_type', 'matched_address', 'latitude', 'longitude', 'tigerline_id', 'street_orientation']
     buff.truncate(0)
-    df[cnames].to_csv(buff, index=False)
+    df[final_order].to_csv(buff, index=False)
     return buff.getvalue()
 
 def main():
