@@ -12,7 +12,7 @@ def geo_post():
         return "No file attached"
 
     #file_contents = file.stream.readlines()[1:]
-    file_contents = StringIO(file.stream.read().decode("UTF8"), newline=None)
+    file_contents = StringIO(file.stream.read().decode("UTF8"))
     result = geocode(file_contents.getvalue())
 
     response = make_response(result)

@@ -27,7 +27,7 @@ def geocode(x):
             buff.write(block)
     outraw = buff.getvalue()
     cnames = ['id_number', 'input_address', 'match_status', 'match_type', 'matched_address', 'lonlat', 'tigerline_id', 'street_orientation']
-    df = pd.read_csv(StringIO(outraw), names=cnames, sep=',')
+    df = pd.read_csv(StringIO(outraw), names=cnames, skiprows=0, index_col=False, sep=',', na_values='')
     #add malformed file handling
     #df['longitude'] = df['lonlat'].str.split(',', expand=True)[0]
     #df['latitude'] = df['lonlat'].str.split(',', expand=True)[1]
