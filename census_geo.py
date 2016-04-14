@@ -23,16 +23,17 @@ def geocode(x):
         files = {'addressFile': ''.join(data_chunks[i])}
         response = requests.post(url, data=census_year, files=files)
         for block in response.iter_content(1024):
+            block = block.decode()
             buff.write(block)
-    outraw = buff.getvalue()
+    outraw = buff.getvalue().strip()
     cnames = ['id_number', 'input_address', 'match_status', 'match_type', 'matched_address', 'lonlat', 'tigerline_id', 'street_orientation']
-    df = pd.read_csv(StringIO(outraw), names=cnames, sep=',')
+    df = pd.read_csv(StringIO(outraw), names=cnames, sep=',', dtype={'lonlat' : 'str'})
     #add malformed file handling
     df['longitude'] = df['lonlat'].str.split(',', expand=True)[0]
     df['latitude'] = df['lonlat'].str.split(',', expand=True)[1]
     final_order = ['id_number', 'input_address', 'match_status', 'match_type', 'matched_address', 'latitude', 'longitude', 'tigerline_id', 'street_orientation']
     buff.truncate(0)
-    df[final_order].to_csv(buff, index=False)
+    df[cnames].to_csv(buff, index=False)
     return buff.getvalue()
 
 def main():

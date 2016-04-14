@@ -7,12 +7,10 @@ app = Flask(__name__)
 @app.route('/geo', methods=["POST"])
 def geo_post():
     file = request.files['data_file']
-    filename = request.files['data_file'].name
-
     if not file:
         return "No file attached"
 
-    file_contents = open(filename, 'r')
+    file_contents = file.stream.readlines()[1:]
 
     result = geocode(file_contents)
 
